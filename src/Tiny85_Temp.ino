@@ -44,7 +44,7 @@ void setup(){
   
   pinMode(INPUT_PIN,INPUT);
   delay(100);
-  digitalWrite(OUTPUT_PIN,HIGH); //power on device
+  
   output=true;
 
 
@@ -72,6 +72,8 @@ void setup(){
 
    TinyWireM.requestFrom(INA219,1);
    Serial.println(TinyWireM.receive());
+   digitalWrite(OUTPUT_PIN,HIGH); //power on device
+   delay(15000);
    
 
  
