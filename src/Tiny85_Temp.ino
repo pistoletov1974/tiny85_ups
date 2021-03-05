@@ -72,6 +72,7 @@ void setup(){
 
    TinyWireM.requestFrom(INA219,1);
    Serial.println(TinyWireM.receive());
+   delay(5000);
    digitalWrite(OUTPUT_PIN,HIGH); //power on device
    delay(15000);
    
@@ -85,7 +86,8 @@ void loop(){
 
 
 
-
+  power=!digitalRead(INPUT_PIN);  
+  if ((power != power_prev) && !power) delay (10000);
   
   // get cuurent
   TinyWireM.beginTransmission(INA219);
@@ -112,7 +114,7 @@ void loop(){
   voltage = (voltage>>3)*4;
  
 
-  power=!digitalRead(INPUT_PIN);  
+  
 
   // process logic 
 //add current check 
@@ -120,7 +122,8 @@ void loop(){
   if (  (((current_prev-current)>1500) && output && !power) || (delay_cycles_off>10) )   {
    output=false;
    delay_cycles_off=0;
-   digitalWrite(OUTPUT_PIN,LOW); //shutdown device 
+   
+  digitalWrite(OUTPUT_PIN,LOW); //shutdown device 
   }
 
 
@@ -164,6 +167,6 @@ void loop(){
  print_cycles--; 
  //print_off_cycles using for off printing to uart 
  print_off_cycles=(print_off_cycles>0)?print_off_cycles-1:0;
-  delay(3000);
+  delay(5000);
   
 }
