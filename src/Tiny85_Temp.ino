@@ -122,8 +122,25 @@ void loop(){
   if (  (((current_prev-current)>1500) && output && !power) || (delay_cycles_off>10) )   {
    output=false;
    delay_cycles_off=0;
-   
-  digitalWrite(OUTPUT_PIN,LOW); //shutdown device 
+    //
+  delay(5000);  
+  //check current one more 
+  TinyWireM.beginTransmission(INA219);
+  TinyWireM.send(0x04);                 // read current 0x04  current register
+  TinyWireM.endTransmission();          // Send 1 byte to the slave
+  delay(1);
+  TinyWireM.requestFrom(INA219,2); // Request 2 byte from slave
+  current = TinyWireM.receive();
+  current= current<<8;
+  current |= TinyWireM.receive(); 
+  if (current_prev-current)>1500) {
+      output=false;
+      delay_cycles_off=0;
+      digitalWrite(OUTPUT_PIN,LOW); //shutdown device 
+  }
+ 
+
+  
   }
 
 
