@@ -119,7 +119,7 @@ void loop(){
   // process logic 
 //add current check 
 // if previous current > current more than 150ma
-  if (  (((current_prev-current)>1500) && output && !power) || (delay_cycles_off>10) )   {
+  /*if (  (((current_prev-current)>1500) && output && !power) || (delay_cycles_off>10) )   {
    output=false;
    delay_cycles_off=0;
     //
@@ -141,7 +141,7 @@ void loop(){
  
 
   
-  }
+  }*/
 
 
   if ((voltage<11100) && (voltage_prev>11100)) delay_cycles_off=0;
