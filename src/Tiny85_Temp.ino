@@ -27,7 +27,7 @@ SoftwareSerial Serial(3, 4); // RX and TX
 
 
 int current,current_prev;
-uint16_t voltage,voltage_prev;
+uint16_t voltage,voltage_prev, current_filtered;
 
 boolean power=false;
 boolean power_prev=power;
@@ -113,35 +113,21 @@ void loop(){
   voltage |= TinyWireM.receive(); 
   voltage = (voltage>>3)*4;
  
-
+   current_filtered = (1-0.1)*current_filtered + 0.1*current;
   
 
   // process logic 
 //add current check 
-// if previous current > current more than 150ma
-  /*if (  (((current_prev-current)>1500) && output && !power) || (delay_cycles_off>10) )   {
-   output=false;
-   delay_cycles_off=0;
-    //
-  delay(5000);  
-  //check current one more 
-  TinyWireM.beginTransmission(INA219);
-  TinyWireM.send(0x04);                 // read current 0x04  current register
-  TinyWireM.endTransmission();          // Send 1 byte to the slave
-  delay(1);
-  TinyWireM.requestFrom(INA219,2); // Request 2 byte from slave
-  current = TinyWireM.receive();
-  current= current<<8;
-  current |= TinyWireM.receive(); 
-  if (current_prev-current)>1500) {
+// if current < 4800  and current >1000
+
+  
+  if (  (((current_filtered)<4800) && output && !power)  )   {
+ 
       output=false;
       delay_cycles_off=0;
       digitalWrite(OUTPUT_PIN,LOW); //shutdown device 
-  }
- 
-
-  
-  }*/
+    
+  } 
 
 
   if ((voltage<11100) && (voltage_prev>11100)) delay_cycles_off=0;
@@ -178,7 +164,9 @@ void loop(){
   Serial.print(state);
   Serial.print(";");
   state=(output)?"ON":"OFF";
-  Serial.println(state);
+  Serial.print(state);
+  Serial.print(";");
+  Serial.println(current_filtered);
  }
   
  print_cycles--; 
