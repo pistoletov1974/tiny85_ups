@@ -26,8 +26,8 @@ SoftwareSerial Serial(3, 4); // RX and TX
 
 
 
-int current,current_prev;
-uint16_t voltage,voltage_prev, current_filtered;
+int16_t current,current_prev , current_filtered;
+uint16_t voltage,voltage_prev;
 
 boolean power=false;
 boolean power_prev=power;
@@ -87,7 +87,7 @@ void loop(){
 
 
   power=!digitalRead(INPUT_PIN);  
-  if ((power != power_prev) && !power) delay (10000);
+
   
   // get cuurent
   TinyWireM.beginTransmission(INA219);
@@ -113,7 +113,7 @@ void loop(){
   voltage |= TinyWireM.receive(); 
   voltage = (voltage>>3)*4;
  
-   current_filtered = (1-0.1)*current_filtered + 0.1*current;
+   current_filtered = (1-0.05)*current_filtered + 0.05*current;
   
 
   // process logic 
@@ -121,7 +121,7 @@ void loop(){
 // if current < 4800  and current >1000
 
   
-  if (  (((current_filtered)<4800) && output && !power)  )   {
+  if (  (((current_filtered - current)<2000) && output && !power)  )   {
  
       output=false;
       delay_cycles_off=0;
@@ -130,8 +130,8 @@ void loop(){
   } 
 
 
-  if ((voltage<11100) && (voltage_prev>11100)) delay_cycles_off=0;
-  if ((voltage<11100) && output && !power)  delay_cycles_off++;
+
+  
   
 
   if (!power_prev && power) delay_cycles_on=0; //power 220v going to ON
@@ -156,6 +156,7 @@ void loop(){
   //decrease print frequent
  if ((print_cycles==0) && (print_off_cycles==0)) {
   // output states
+  print_cycles = 250;
   Serial.print(current);
   Serial.print(";"); 
   Serial.print((int16_t)voltage);
@@ -172,6 +173,6 @@ void loop(){
  print_cycles--; 
  //print_off_cycles using for off printing to uart 
  print_off_cycles=(print_off_cycles>0)?print_off_cycles-1:0;
-  delay(5000);
+  delay(1000);
   
 }
