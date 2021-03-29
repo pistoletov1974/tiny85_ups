@@ -121,7 +121,7 @@ void loop(){
 // if current < 4800  and current >1000
 
   
-  if (  (((current_filtered - current)<2000) && output && !power)  )   {
+  if (  (((current_filtered - current)>2000) && output && !power)  )   {
  
       output=false;
       delay_cycles_off=0;
@@ -156,7 +156,7 @@ void loop(){
   //decrease print frequent
  if ((print_cycles==0) && (print_off_cycles==0)) {
   // output states
-  print_cycles = 250;
+  print_cycles = 100;
   Serial.print(current);
   Serial.print(";"); 
   Serial.print((int16_t)voltage);
@@ -173,6 +173,6 @@ void loop(){
  print_cycles--; 
  //print_off_cycles using for off printing to uart 
  print_off_cycles=(print_off_cycles>0)?print_off_cycles-1:0;
-  delay(1000);
+  delay(2000); // real time 1000 ms (possible quartz error)
   
 }
