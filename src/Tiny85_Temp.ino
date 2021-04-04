@@ -113,7 +113,7 @@ void loop(){
   voltage |= TinyWireM.receive(); 
   voltage = (voltage>>3)*4;
  
-   current_filtered = (1-0.05)*current_filtered + 0.05*current;
+   current_filtered = (1-0.01)*current_filtered + 0.01*current;
   
 
   // process logic 
@@ -121,10 +121,12 @@ void loop(){
 // if current < 4800  and current >1000
 
   
-  if (  (((current_filtered - current)>2000) && output && !power)  )   {
+  if (  (((current_filtered - current)>2000) && output && !power && (voltage<11500))  )   {
  
       output=false;
       delay_cycles_off=0;
+      Serial.println("goes to shut down");
+      delay(3000);
       digitalWrite(OUTPUT_PIN,LOW); //shutdown device 
     
   } 
