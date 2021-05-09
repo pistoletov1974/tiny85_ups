@@ -138,8 +138,8 @@ void loop(){
 
   if (!power_prev && power) delay_cycles_on=0; //power 220v going to ON
   if ((!output) && power) delay_cycles_on++; 
-   if (abs(current-current_prev)>100) print_cycles=0;
-   if (abs(voltage-voltage_prev)>100) print_cycles=0;
+   if (abs(current-current_prev)>200) print_cycles=0;
+   if (abs(voltage-voltage_prev)>200) print_cycles=0;
    
   if (delay_cycles_on>10) {
     output=true;
@@ -175,6 +175,6 @@ void loop(){
  print_cycles--; 
  //print_off_cycles using for off printing to uart 
  print_off_cycles=(print_off_cycles>0)?print_off_cycles-1:0;
-  delay(2000); // real time 1000 ms (possible quartz error)
+  delay(3000); // real time 1000 ms (possible quartz error)
   
 }
